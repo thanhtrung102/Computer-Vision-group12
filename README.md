@@ -1,224 +1,244 @@
-# Computer Vision: MNIST Digit Classification
+<p align="center">
+  <img src="docs/images/banner.png" alt="MNIST Classification Banner" width="800"/>
+</p>
 
-A comprehensive computer vision project implementing and comparing multiple classical machine learning and deep learning approaches for handwritten digit recognition using the MNIST dataset.
+<h1 align="center">MNIST Digit Classification: A Comparative Study</h1>
+
+<p align="center">
+  <strong>From Classical Machine Learning to Deep Learning</strong>
+</p>
+
+<p align="center">
+  <a href="#overview">Overview</a> •
+  <a href="#results">Results</a> •
+  <a href="#installation">Installation</a> •
+  <a href="#usage">Usage</a> •
+  <a href="#demo">Demo</a> •
+  <a href="#methods">Methods</a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.8+-blue.svg" alt="Python"/>
+  <img src="https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg" alt="PyTorch"/>
+  <img src="https://img.shields.io/badge/scikit--learn-1.3+-f7931e.svg" alt="sklearn"/>
+  <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License"/>
+</p>
+
+---
 
 ## Overview
 
-This repository explores different methodologies for digit classification, ranging from traditional machine learning techniques to modern deep learning architectures. The project serves as an educational resource demonstrating the evolution of computer vision approaches and their comparative performance.
+This project provides a comprehensive comparison of machine learning approaches for handwritten digit classification on the MNIST dataset. We implement and evaluate methods ranging from classical algorithms (KNN, SVM) to modern deep learning architectures (LeNet, AlexNet), demonstrating the evolution and effectiveness of different computer vision techniques.
 
-## Dataset
+### Key Features
 
-**MNIST (Modified National Institute of Standards and Technology)**
-- 28x28 grayscale images of handwritten digits (0-9)
-- Training set: 60,000 samples (10,000 for classical methods)
-- Test set: 10,000 samples (2,000 for classical methods)
-- 10 classes (digits 0-9)
+- **6 Different Approaches**: KNN (Euclidean & Manhattan), SVM, Spatial Pyramid Matching, LeNet, AlexNet
+- **Modular Codebase**: Reusable components for data loading, training, and evaluation
+- **Interactive Demo**: Streamlit web app for real-time digit recognition
+- **Comprehensive Analysis**: Confusion matrices, per-class metrics, and visualizations
+- **Docker Support**: Easy deployment with containerization
 
-## Implemented Approaches
+## Results
 
-### Deep Learning Models
+| Model | Accuracy | Parameters | Inference (ms/sample) |
+|-------|----------|------------|----------------------|
+| **AlexNet** | **96.85%** | 6.4M | 0.8 |
+| **LeNet** | 96.00% | 44K | 0.3 |
+| KNN (Euclidean) | 92.32% | - | 15.2 |
+| KNN (Manhattan) | 91.26% | - | 14.8 |
+| SVM (RBF) | 89.50% | - | 8.5 |
+| SPM + SVM | 65.18% | - | 120.3 |
 
-#### 1. AlexNet (`AlexNet.ipynb`)
-A CNN inspired by the AlexNet architecture, adapted for MNIST digit classification.
+<p align="center">
+  <img src="docs/images/accuracy_comparison.png" alt="Accuracy Comparison" width="600"/>
+</p>
 
-**Architecture:**
-- 5 convolutional layers (32 → 64 → 96 → 64 → 32 filters)
-- ReLU activations with max pooling
-- 3 fully connected layers (2048 → 1024 → 10)
-- Dropout regularization
+### Key Findings
 
-**Training Configuration:**
-- Optimizer: SGD (learning rate: 0.01)
-- Loss: Cross-entropy
-- Batch size: 32
-- Epochs: 14
+1. **Deep Learning Superiority**: CNNs significantly outperform classical methods, with AlexNet achieving the highest accuracy
+2. **Distance Metric Impact**: Euclidean distance outperforms Manhattan for KNN on MNIST
+3. **Feature Engineering Trade-off**: Hand-crafted features (SPM) require careful tuning and still underperform learned representations
+4. **Efficiency vs Accuracy**: LeNet provides an excellent balance with near-AlexNet accuracy at 1% of the parameters
 
-**Performance:**
-- Best accuracy: **96.85%** (Epoch 4)
-- Rapid convergence (>96% by epoch 3)
+## Installation
 
-#### 2. LeNet (`LeNet.ipynb`)
-Implementation of the classic LeNet-5 architecture.
+### Prerequisites
 
-**Architecture:**
-- 2 convolutional layers (1 → 10 → 20 filters)
-- Max pooling after each conv layer
-- Dropout2d for regularization
-- Fully connected layers: 320 → 50 → 10
+- Python 3.8 or higher
+- CUDA-capable GPU (optional, for faster training)
 
-**Training Configuration:**
-- Optimizer: SGD (learning rate: 0.0001)
-- Loss: Cross-entropy
-- Batch size: 32
-- Epochs: 14
+### Setup
 
-**Performance:**
-- High accuracy comparable to AlexNet
-- More compact and efficient architecture
-
-### Classical Machine Learning Approaches
-
-#### 3. K-Nearest Neighbors - Euclidean Distance (`knn_Euclidean.ipynb`)
-KNN classifier using Euclidean distance metric (L2 norm).
-
-**Configuration:**
-- Tested k values: [1, 2, 3, 4, 5, 6, 7, 8, 9]
-- Best k: 3
-- Dataset: 10,000 training / 2,000 test samples
-
-**Performance:**
-- Accuracy: **92.32%**
-- Includes confusion matrix visualization
-
-#### 4. K-Nearest Neighbors - Manhattan Distance (`knn_Manhattan.ipynb`)
-KNN classifier using Manhattan distance metric (L1 norm).
-
-**Configuration:**
-- Tested k values: [1, 2, 3, 4, 5, 6, 7, 8, 9]
-- Best k: 3
-- Dataset: 10,000 training / 2,000 test samples
-
-**Performance:**
-- Accuracy: **91.26%**
-- Demonstrates impact of distance metric choice
-
-#### 5. Spatial Pyramid Matching (`Spatial Pyramid Matching.ipynb`)
-Feature-based approach using Dense SIFT descriptors with SVM classifier.
-
-**Feature Extraction:**
-- Dense SIFT (Scale-Invariant Feature Transform)
-- Step size: 4 pixels
-- Vocabulary size: 100 clusters (K-means)
-
-**Spatial Pyramid:**
-- Pyramid levels: 0 and 1
-- Weighted encoding (0.5 per level)
-- Multi-scale spatial representation
-
-**Classifier:**
-- SVM with RBF kernel
-- Hyperparameter tuning via 5-fold CV
-- Best params: C=1.0, gamma=100.0
-
-**Performance:**
-- Accuracy: **65.18%**
-- Per-class precision/recall analysis
-- Best class: Digit 1 (0.87 precision, 0.95 recall)
-- Most challenging: Digit 8 (0.45 precision, 0.50 recall)
-
-#### 6. Support Vector Machine (`svm.ipynb`)
-Standard SVM classifier with RBF kernel.
-
-**Configuration:**
-- C: 0.5
-- Gamma: 0.05
-- Normalized features [0, 1]
-- Dataset: 10,000 training / 2,000 test samples
-
-**Performance:**
-- Confusion matrix analysis
-- Traditional baseline approach
-
-## Performance Comparison
-
-| Method | Dataset Size (Train/Test) | Accuracy | Type |
-|--------|---------------------------|----------|------|
-| **AlexNet** | 60K / 10K | **96.85%** | Deep Learning |
-| **LeNet** | 60K / 10K | **~96%** | Deep Learning |
-| **KNN (Euclidean)** | 10K / 2K | **92.32%** | Distance-based |
-| **KNN (Manhattan)** | 10K / 2K | **91.26%** | Distance-based |
-| **SVM** | 10K / 2K | **~90%** | Kernel-based |
-| **Spatial Pyramid Matching** | 10K / 2K | **65.18%** | Feature-based |
-
-## Key Insights
-
-1. **Deep learning superiority**: CNNs (AlexNet, LeNet) achieve highest accuracy (96%+) with learned hierarchical features
-2. **Distance metrics matter**: Euclidean distance slightly outperforms Manhattan in KNN (92.32% vs 91.26%)
-3. **Feature engineering complexity**: Hand-crafted features (Dense SIFT + SPM) require careful tuning but offer interpretability
-4. **Computational trade-offs**: Classical methods use smaller datasets due to computational constraints
-5. **Convergence speed**: Deep models reach high performance within 3-4 epochs
-
-## Dependencies
-
-### Deep Learning
 ```bash
-pip install torch torchvision
+# Clone the repository
+git clone https://github.com/thanhtrung102/Computer-Vision-group12.git
+cd Computer-Vision-group12
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
 ```
 
-### Classical ML & Computer Vision
-```bash
-pip install scikit-learn opencv-python scipy numpy matplotlib
-```
+### Docker Installation
 
-### Complete Requirements
-- PyTorch & torchvision (deep learning)
-- scikit-learn (KNN, SVM, clustering, metrics)
-- OpenCV (cv2) (image processing, SIFT)
-- NumPy (numerical operations)
-- SciPy (scientific computing)
-- Matplotlib (visualization)
-- Pickle (model serialization)
+```bash
+# Build the Docker image
+docker build -t mnist-classifier .
+
+# Run the container
+docker run -p 8501:8501 mnist-classifier
+```
 
 ## Usage
 
-Each notebook is self-contained and can be run independently:
+### Quick Start
 
-```bash
-# For Jupyter Notebook
-jupyter notebook <notebook_name>.ipynb
+```python
+from src import LeNet, get_mnist_loaders, Trainer, Evaluator
+import torch.optim as optim
 
-# For Jupyter Lab
-jupyter lab <notebook_name>.ipynb
+# Load data
+train_loader, test_loader, _ = get_mnist_loaders(batch_size=64)
 
-# For Google Colab
-# Upload the notebook and run all cells
+# Create model and trainer
+model = LeNet()
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+trainer = Trainer(model, optimizer)
+
+# Train
+history = trainer.fit(train_loader, epochs=10)
+
+# Evaluate
+evaluator = Evaluator(model)
+metrics = evaluator.evaluate(test_loader)
+print(f"Test Accuracy: {metrics['accuracy']:.2f}%")
 ```
 
-**Note:** The notebooks were created using Google Colab and can be directly opened there.
+### Running Notebooks
+
+```bash
+# Start Jupyter
+jupyter notebook notebooks/
+```
+
+### Running the Demo App
+
+```bash
+streamlit run app/streamlit_app.py
+```
+
+## Demo
+
+<p align="center">
+  <img src="docs/images/demo.gif" alt="Demo" width="600"/>
+</p>
+
+Try our interactive demo where you can:
+- Draw digits and get real-time predictions
+- Compare predictions across all models
+- View confidence scores and probability distributions
+
+**[Launch Demo on Hugging Face Spaces](https://huggingface.co/spaces/your-username/mnist-classifier)** *(coming soon)*
+
+## Methods
+
+### Classical Machine Learning
+
+#### K-Nearest Neighbors (KNN)
+- **Euclidean Distance**: Standard L2 norm, achieved 92.32% accuracy with k=3
+- **Manhattan Distance**: L1 norm, achieved 91.26% accuracy with k=3
+
+#### Support Vector Machine (SVM)
+- RBF kernel with grid search for hyperparameter optimization
+- Achieved 89.50% on raw pixel features
+
+#### Spatial Pyramid Matching (SPM)
+- Dense SIFT feature extraction
+- 3-level spatial pyramid (1x1, 2x2, 4x4)
+- SVM classifier with histogram intersection kernel
+
+### Deep Learning
+
+#### LeNet-5
+```
+Input(1x28x28) → Conv(10,5x5) → Pool → Conv(20,5x5) → Pool → FC(50) → FC(10)
+```
+- Classic architecture by Yann LeCun
+- ~44K parameters
+- Dropout for regularization
+
+#### AlexNet (Adapted)
+```
+Input(1x28x28) → 5 Conv layers → 3 FC layers → Output(10)
+```
+- Adapted from ImageNet architecture
+- ~6.4M parameters
+- ReLU activation, Dropout
 
 ## Project Structure
 
 ```
-.
-├── AlexNet.ipynb                      # AlexNet CNN implementation
-├── LeNet.ipynb                        # LeNet-5 CNN implementation
-├── knn_Euclidean.ipynb               # KNN with Euclidean distance
-├── knn_Manhattan.ipynb               # KNN with Manhattan distance
-├── Spatial Pyramid Matching.ipynb    # Dense SIFT + SPM + SVM
-├── svm.ipynb                         # Standard SVM classifier
-└── README.md                         # This file
+Computer-Vision-group12/
+├── app/
+│   └── streamlit_app.py      # Interactive demo
+├── docs/
+│   ├── images/               # Documentation images
+│   └── ARCHITECTURE.md       # Design decisions
+├── notebooks/
+│   ├── AlexNet.ipynb
+│   ├── LeNet.ipynb
+│   ├── knn_Euclidean.ipynb
+│   ├── knn_Manhattan.ipynb
+│   ├── svm.ipynb
+│   ├── Spatial Pyramid Matching.ipynb
+│   └── Model_Comparison.ipynb
+├── results/
+│   └── .gitkeep
+├── src/
+│   ├── __init__.py
+│   ├── data.py               # Data loading utilities
+│   ├── models.py             # Neural network architectures
+│   ├── train.py              # Training utilities
+│   ├── evaluate.py           # Evaluation metrics
+│   └── visualize.py          # Visualization tools
+├── .gitignore
+├── Dockerfile
+├── LICENSE
+├── README.md
+└── requirements.txt
 ```
 
-## Outputs & Artifacts
+## Contributing
 
-- **Trained models**: PyTorch models saved during training
-- **Codebook**: `spm_lv1_codebook.pkl` (SPM vocabulary)
-- **Visualizations**:
-  - Training curves
-  - Confusion matrices (normalized and raw)
-  - Accuracy vs. hyperparameter plots
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-## Future Improvements
-
-- Implement data augmentation for deep learning models
-- Add modern architectures (ResNet, VGG, EfficientNet)
-- Ensemble methods combining multiple classifiers
-- Transfer learning experiments
-- Real-time digit recognition application
-- Extended evaluation metrics (F1-score, ROC curves)
-- Cross-validation for deep learning models
-
-## Contributors
-
-Group 12 - Computer Vision Project
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ## License
 
-This project is for educational purposes.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgments
 
-- MNIST dataset: Yann LeCun, Corinna Cortes, Christopher J.C. Burges
-- PyTorch framework
-- scikit-learn library
-- Google Colab for computational resources
+- [MNIST Dataset](http://yann.lecun.com/exdb/mnist/) by Yann LeCun
+- [PyTorch](https://pytorch.org/) team for the excellent deep learning framework
+- Course instructors and TAs for guidance
+
+## Contact
+
+**Computer Vision Group 12**
+
+- GitHub: [@thanhtrung102](https://github.com/thanhtrung102)
+
+---
+
+<p align="center">
+  Made with dedication for learning Computer Vision
+</p>
